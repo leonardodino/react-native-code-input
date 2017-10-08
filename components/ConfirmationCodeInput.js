@@ -74,16 +74,12 @@ export default class ConfirmationCodeInput extends Component {
   }
   
   _onFocus(index) {
-    let newCodeArr = _.clone(this.state.codeArr);
-    const currentEmptyIndex = _.findIndex(newCodeArr, c => !c);
+    const {codeArr} = this.state
+    const currentEmptyIndex = _.findIndex(codeArr, c => !c);
     if (currentEmptyIndex !== -1 && currentEmptyIndex < index) {
       return this._setFocus(currentEmptyIndex);
     }
-    for (const i in newCodeArr) {
-      if (i >= index) {
-        newCodeArr[i] = '';
-      }
-    }
+    const newCodeArr = codeArr.map((v, i) => (i < index ? v : ''))
     
     this.setState({
       codeArr: newCodeArr,
@@ -149,38 +145,38 @@ export default class ConfirmationCodeInput extends Component {
   
   _getClassStyle(className, active) {
     const { cellBorderWidth, activeColor, inactiveColor, space } = this.props;
-    let classStyle = {
+    const classStyle = {
       ...this._getInputSpaceStyle(space),
       color: activeColor
     };
     
     switch (className) {
       case 'clear':
-        return _.merge(classStyle, { borderWidth: 0 });
+        return Object.assign({}, classStyle, { borderWidth: 0 });
       case 'border-box':
-        return _.merge(classStyle, {
+        return Object.assign({}, classStyle, {
           borderWidth: cellBorderWidth,
           borderColor: (active ? activeColor : inactiveColor)
         });
       case 'border-circle':
-        return _.merge(classStyle, {
+        return Object.assign({}, classStyle, {
           borderWidth: cellBorderWidth,
           borderRadius: 50,
           borderColor: (active ? activeColor : inactiveColor)
         });
       case 'border-b':
-        return _.merge(classStyle, {
+        return Object.assign({}, classStyle, {
           borderBottomWidth: cellBorderWidth,
           borderColor: (active ? activeColor : inactiveColor),
         });
       case 'border-b-t':
-        return _.merge(classStyle, {
+        return Object.assign({}, classStyle, {
           borderTopWidth: cellBorderWidth,
           borderBottomWidth: cellBorderWidth,
           borderColor: (active ? activeColor : inactiveColor)
         });
       case 'border-l-r':
-        return _.merge(classStyle, {
+        return Object.assign({}, classStyle, {
           borderLeftWidth: cellBorderWidth,
           borderRightWidth: cellBorderWidth,
           borderColor: (active ? activeColor : inactiveColor)
@@ -242,11 +238,9 @@ export default class ConfirmationCodeInput extends Component {
       width: size,
       height: size
     };
-    
-    let codeInputs = [];
-    for (let i = 0; i < codeLength; i++) {
-      const id = i;
-      codeInputs.push(
+
+    const codeInputs = _.range(codeLength)
+      .map(id =>
         <TextInput
           key={id}
           ref={ref => (this.codeInputRefs[id] = ref)}
@@ -269,8 +263,7 @@ export default class ConfirmationCodeInput extends Component {
           maxLength={1}
         />
       )
-    }
-    
+
     return (
       <View style={[styles.container, this._getContainerStyle(size, inputPosition), containerStyle]}>
         {codeInputs}
