@@ -32,7 +32,7 @@ const getInputSpaceStyle = (space, inputPosition) => {
 	return positions[inputPosition] || positions.default
 }
 
-const getBorderStyle = (cellBorderWidth, type) =>{
+const getBorderStyle = (cellBorderWidth, borderType) =>{
 	const types = {
 		'clear': {borderWidth: 0},
 		'border-box': {borderWidth: cellBorderWidth},
@@ -42,15 +42,15 @@ const getBorderStyle = (cellBorderWidth, type) =>{
 		'border-l-r': {borderLeftWidth: cellBorderWidth, borderRightWidth: cellBorderWidth},
 		'default': {},
 	}
-	return types[type] || types.default
+	return types[borderType] || types.default
 }
 
-const getTypeStyle = (active, {
-	type, cellBorderWidth, activeColor,
+const getBorderTypeStyle = (active, {
+	borderType, cellBorderWidth, activeColor,
 	inactiveColor, space, inputPosition
 }) => ({
 	...getInputSpaceStyle(space, inputPosition),
-	...getBorderStyle(cellBorderWidth, type),
+	...getBorderStyle(cellBorderWidth, borderType),
 	color: activeColor,
 	borderColor: active ? activeColor : inactiveColor,
 })
@@ -61,7 +61,7 @@ export default class ConfirmationCodeInput extends Component {
 		inputPosition: PropTypes.oneOf(Object.keys(CONTAINER_STYLES)),
 		size: PropTypes.number,
 		space: PropTypes.number,
-		type: PropTypes.string,
+		borderType: PropTypes.string,
 		cellBorderWidth: PropTypes.number,
 		activeColor: PropTypes.string,
 		inactiveColor: PropTypes.string,
@@ -77,7 +77,7 @@ export default class ConfirmationCodeInput extends Component {
 		inputPosition: 'center',
 		autoFocus: true,
 		size: 40,
-		type: 'border-box',
+		borderType: 'border-box',
 		cellBorderWidth: 1,
 		activeColor: 'rgba(255, 255, 255, 1)',
 		inactiveColor: 'rgba(255, 255, 255, 0.2)',
@@ -168,7 +168,7 @@ export default class ConfirmationCodeInput extends Component {
 				style={[
 					styles.codeInput,
 					initialCodeInputStyle,
-					getTypeStyle(this.state.currentIndex == id, this.props),
+					getBorderTypeStyle(this.state.currentIndex == id, this.props),
 					codeInputStyle,
 				]}
 				underlineColorAndroid='transparent'
