@@ -34,13 +34,11 @@ const getInputSpaceStyle = (space, inputPosition) => {
 
 const getBorderStyle = (cellBorderWidth, borderType) =>{
 	const types = {
-		'clear': {borderWidth: 0},
-		'border-box': {borderWidth: cellBorderWidth},
-		'border-circle': {borderWidth: cellBorderWidth, borderRadius: 50},
-		'border-b': {borderBottomWidth: cellBorderWidth},
-		'border-b-t': {borderTopWidth: cellBorderWidth, borderBottomWidth: cellBorderWidth},
-		'border-l-r': {borderLeftWidth: cellBorderWidth, borderRightWidth: cellBorderWidth},
-		'default': {},
+		clear: {borderWidth: 0},
+		square: {borderWidth: cellBorderWidth},
+		circle: {borderWidth: cellBorderWidth, borderRadius: 50},
+		underline: {borderBottomWidth: cellBorderWidth},
+		default: {},
 	}
 	return types[borderType] || types.default
 }

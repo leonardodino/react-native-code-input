@@ -51,7 +51,7 @@ export default class App extends Component {
             </Text>
             <CodeInput
               ref='codeInputRef1'
-              borderType='border-b'
+              borderType='underline'
               space={5}
               size={30}
               inputPosition='left'
@@ -83,7 +83,7 @@ export default class App extends Component {
             <CodeInput
               ref='codeInputRef3'
               codeLength={5}
-              borderType='border-circle'
+              borderType='circle'
               autoFocus={false}
               codeInputStyle={{ fontWeight: '800' }}
               onFulfill={(isValid, code) => this._onFulfill3(isValid, code)}
