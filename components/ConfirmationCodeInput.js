@@ -16,11 +16,44 @@ const CONTAINER_STYLES = {
 	default: {justifyContent: 'space-between'},
 }
 
-const getContainerStyle = (height, passedStyle, position = 'default') => {
-	const style = (CONTAINER_STYLES[position] || CONTAINER_STYLES.default)
+const getContainerStyle = (height, passedStyle, inputPosition) => {
+	const style = (CONTAINER_STYLES[inputPosition] || CONTAINER_STYLES.default)
 	return [styles.container, {...style, height}, passedStyle]
 }
 
+const getInputSpaceStyle = (space, inputPosition) => {
+	const positions = {
+		left: {marginRight: space},
+		center: {marginRight: space / 2, marginLeft: space / 2},
+		right: {marginLeft: space},
+		'full-width': {marginRight: 0, marginLeft: 0},
+		default: {marginRight: 0, marginLeft: 0},
+	}
+	return positions[inputPosition] || positions.default
+}
+
+const getBorderStyle = (cellBorderWidth, type) =>{
+	const types = {
+		'clear': {borderWidth: 0},
+		'border-box': {borderWidth: cellBorderWidth},
+		'border-circle': {borderWidth: cellBorderWidth, borderRadius: 50},
+		'border-b': {borderBottomWidth: cellBorderWidth},
+		'border-b-t': {borderTopWidth: cellBorderWidth, borderBottomWidth: cellBorderWidth},
+		'border-l-r': {borderLeftWidth: cellBorderWidth, borderRightWidth: cellBorderWidth},
+		'default': {},
+	}
+	return types[type] || types.default
+}
+
+const getTypeStyle = (active, {
+	type, cellBorderWidth, activeColor,
+	inactiveColor, space, inputPosition
+}) => ({
+	...getInputSpaceStyle(space, inputPosition),
+	...getBorderStyle(cellBorderWidth, type),
+	color: activeColor,
+	borderColor: active ? activeColor : inactiveColor,
+})
 
 export default class ConfirmationCodeInput extends Component {
 	static propTypes = {
@@ -92,74 +125,6 @@ export default class ConfirmationCodeInput extends Component {
 		})
 	}
 
-
-	_getInputSpaceStyle(space) {
-		const {inputPosition} = this.props
-		switch (inputPosition) {
-			case 'left':
-				return {
-					marginRight: space,
-				}
-			case 'center':
-				return {
-					marginRight: space / 2,
-					marginLeft: space / 2,
-				}
-			case 'right':
-				return {
-					marginLeft: space,
-				}
-			default:
-				return {
-					marginRight: 0,
-					marginLeft: 0,
-				}
-		}
-	}
-
-	_getTypeStyle(type, active) {
-		const {cellBorderWidth, activeColor, inactiveColor, space} = this.props
-		const classStyle = {
-			...this._getInputSpaceStyle(space),
-			color: activeColor,
-		}
-
-		switch (type) {
-			case 'clear':
-				return Object.assign({}, classStyle, {borderWidth: 0})
-			case 'border-box':
-				return Object.assign({}, classStyle, {
-					borderWidth: cellBorderWidth,
-					borderColor: active ? activeColor : inactiveColor,
-				})
-			case 'border-circle':
-				return Object.assign({}, classStyle, {
-					borderWidth: cellBorderWidth,
-					borderRadius: 50,
-					borderColor: active ? activeColor : inactiveColor,
-				})
-			case 'border-b':
-				return Object.assign({}, classStyle, {
-					borderBottomWidth: cellBorderWidth,
-					borderColor: active ? activeColor : inactiveColor,
-				})
-			case 'border-b-t':
-				return Object.assign({}, classStyle, {
-					borderTopWidth: cellBorderWidth,
-					borderBottomWidth: cellBorderWidth,
-					borderColor: active ? activeColor : inactiveColor,
-				})
-			case 'border-l-r':
-				return Object.assign({}, classStyle, {
-					borderLeftWidth: cellBorderWidth,
-					borderRightWidth: cellBorderWidth,
-					borderColor: active ? activeColor : inactiveColor,
-				})
-			default:
-				return type
-		}
-	}
-
 	_onKeyPress(e) {
 		if (e.nativeEvent.key === 'Backspace') {
 			const {currentIndex} = this.state
@@ -192,7 +157,7 @@ export default class ConfirmationCodeInput extends Component {
 	render() {
 		const {
 			codeLength, codeInputStyle, containerStyle,
-			inputPosition, autoFocus, type, size, activeColor,
+			inputPosition, autoFocus, size, activeColor,
 		} = this.props
 		const Component = this.props.inputComponent
 		const initialCodeInputStyle = {width: size, height: size}
@@ -203,7 +168,7 @@ export default class ConfirmationCodeInput extends Component {
 				style={[
 					styles.codeInput,
 					initialCodeInputStyle,
-					this._getTypeStyle(type, this.state.currentIndex == id),
+					getTypeStyle(this.state.currentIndex == id, this.props),
 					codeInputStyle,
 				]}
 				underlineColorAndroid='transparent'
