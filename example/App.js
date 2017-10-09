@@ -49,7 +49,7 @@ export default class App extends Component {
             </Text>
             <CodeInput
               ref='codeInputRef1'
-              className={'border-b'}
+              type='border-b'
               space={5}
               size={30}
               inputPosition='left'
@@ -82,9 +82,8 @@ export default class App extends Component {
             </Text>
             <CodeInput
               ref='codeInputRef3'
-              keyboardType='numeric'
               codeLength={5}
-              className={'border-circle'}
+              type='border-circle'
               compareWithCode='12345'
               autoFocus={false}
               codeInputStyle={{ fontWeight: '800' }}

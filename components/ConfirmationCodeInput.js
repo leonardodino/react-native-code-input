@@ -1,16 +1,35 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {View, TextInput, StyleSheet, Dimensions} from 'react-native'
+import {View, TextInput, StyleSheet, Dimensions, Platform} from 'react-native'
 import _ from 'lodash'
+
+const defaultKeyboardType = Platform.select({
+	ios: 'number-pad',
+	android: 'numeric',
+})
+
+const CONTAINER_STYLES = {
+	left: {justifyContent: 'flex-start'},
+	center: {justifyContent: 'center'},
+	right: {justifyContent: 'flex-end'},
+	'full-width': {justifyContent: 'space-between'},
+	default: {justifyContent: 'space-between'},
+}
+
+const getContainerStyle = (height, passedStyle, position = 'default') => {
+	const style = (CONTAINER_STYLES[position] || CONTAINER_STYLES.default)
+	return [styles.container, {...style, height}, passedStyle]
+}
+
 
 export default class ConfirmationCodeInput extends Component {
 	static propTypes = {
 		codeLength: PropTypes.number,
 		compareWithCode: PropTypes.string,
-		inputPosition: PropTypes.string,
+		inputPosition: PropTypes.oneOf(Object.keys(CONTAINER_STYLES)),
 		size: PropTypes.number,
 		space: PropTypes.number,
-		className: PropTypes.string,
+		type: PropTypes.string,
 		cellBorderWidth: PropTypes.number,
 		activeColor: PropTypes.string,
 		inactiveColor: PropTypes.string,
@@ -27,7 +46,7 @@ export default class ConfirmationCodeInput extends Component {
 		inputPosition: 'center',
 		autoFocus: true,
 		size: 40,
-		className: 'border-box',
+		type: 'border-box',
 		cellBorderWidth: 1,
 		activeColor: 'rgba(255, 255, 255, 1)',
 		inactiveColor: 'rgba(255, 255, 255, 0.2)',
@@ -37,25 +56,12 @@ export default class ConfirmationCodeInput extends Component {
 		inputComponent: TextInput,
 	}
 
-	constructor(props) {
-		super(props)
-
+	constructor(...args) {
+		super(...args)
+		this.codeInputRefs = []
 		this.state = {
 			codeArr: new Array(this.props.codeLength).fill(''),
 			currentIndex: 0,
-		}
-
-		this.codeInputRefs = []
-	}
-
-	componentDidMount() {
-		const {compareWithCode, codeLength, inputPosition} = this.props
-		if (compareWithCode && compareWithCode.length !== codeLength) {
-			console.error('Invalid props: compareWith length is not equal to codeLength')
-		}
-
-		if (_.indexOf(['center', 'left', 'right', 'full-width'], inputPosition) === -1) {
-			console.error('Invalid input position. Must be in: center, left, right, full')
 		}
 	}
 
@@ -96,31 +102,6 @@ export default class ConfirmationCodeInput extends Component {
 		return code == compareWithCode
 	}
 
-	_getContainerStyle(size, position) {
-		switch (position) {
-			case 'left':
-				return {
-					justifyContent: 'flex-start',
-					height: size,
-				}
-			case 'center':
-				return {
-					justifyContent: 'center',
-					height: size,
-				}
-			case 'right':
-				return {
-					justifyContent: 'flex-end',
-					height: size,
-				}
-			default:
-				return {
-					justifyContent: 'space-between',
-					height: size,
-				}
-		}
-	}
-
 	_getInputSpaceStyle(space) {
 		const {inputPosition} = this.props
 		switch (inputPosition) {
@@ -145,14 +126,14 @@ export default class ConfirmationCodeInput extends Component {
 		}
 	}
 
-	_getClassStyle(className, active) {
+	_getTypeStyle(type, active) {
 		const {cellBorderWidth, activeColor, inactiveColor, space} = this.props
 		const classStyle = {
 			...this._getInputSpaceStyle(space),
 			color: activeColor,
 		}
 
-		switch (className) {
+		switch (type) {
 			case 'clear':
 				return Object.assign({}, classStyle, {borderWidth: 0})
 			case 'border-box':
@@ -184,7 +165,7 @@ export default class ConfirmationCodeInput extends Component {
 					borderColor: active ? activeColor : inactiveColor,
 				})
 			default:
-				return className
+				return type
 		}
 	}
 
@@ -226,23 +207,11 @@ export default class ConfirmationCodeInput extends Component {
 
 	render() {
 		const {
-			codeLength,
-			codeInputStyle,
-			containerStyle,
-			inputPosition,
-			autoFocus,
-			className,
-			size,
-			activeColor,
+			codeLength, codeInputStyle, containerStyle,
+			inputPosition, autoFocus, type, size, activeColor,
 		} = this.props
-
 		const Component = this.props.inputComponent
-
-		const initialCodeInputStyle = {
-			width: size,
-			height: size,
-		}
-
+		const initialCodeInputStyle = {width: size, height: size}
 		const codeInputs = _.range(codeLength).map(id => (
 			<Component
 				key={id}
@@ -250,12 +219,12 @@ export default class ConfirmationCodeInput extends Component {
 				style={[
 					styles.codeInput,
 					initialCodeInputStyle,
-					this._getClassStyle(className, this.state.currentIndex == id),
+					this._getTypeStyle(type, this.state.currentIndex == id),
 					codeInputStyle,
 				]}
-				underlineColorAndroid="transparent"
+				underlineColorAndroid='transparent'
 				selectionColor={activeColor}
-				keyboardType={'name-phone-pad'}
+				keyboardType={defaultKeyboardType}
 				returnKeyType={'done'}
 				{...this.props}
 				autoFocus={autoFocus && id == 0}
@@ -267,16 +236,8 @@ export default class ConfirmationCodeInput extends Component {
 			/>
 		))
 
-		return (
-			<View
-				style={[
-					styles.container,
-					this._getContainerStyle(size, inputPosition),
-					containerStyle,
-				]}>
-				{codeInputs}
-			</View>
-		)
+		const viewStyle = getContainerStyle(size, containerStyle, inputPosition)
+		return <View style={viewStyle} children={codeInputs}/>
 	}
 }
 
