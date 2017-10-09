@@ -50,6 +50,7 @@ export default class ConfirmationCodeInput extends Component {
 		inactiveColor: 'rgba(255, 255, 255, 0.2)',
 		space: 8,
 		inputComponent: TextInput,
+		onFulfill: () => undefined,
 	}
 
 	constructor(...args) {
