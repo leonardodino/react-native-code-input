@@ -68,6 +68,7 @@ export default class ConfirmationCodeInput extends Component {
 		containerStyle: View.propTypes.style,
 		onFulfill: PropTypes.func,
 		inputComponent: React.PropTypes.func,
+		keyboardType: TextInput.propTypes.keyboardType,
 	}
 
 	static defaultProps = {
@@ -82,6 +83,7 @@ export default class ConfirmationCodeInput extends Component {
 		space: 8,
 		inputComponent: TextInput,
 		onFulfill: () => undefined,
+		keyboardType: defaultKeyboardType,
 	}
 
 	constructor(...args) {
@@ -171,7 +173,6 @@ export default class ConfirmationCodeInput extends Component {
 				]}
 				underlineColorAndroid='transparent'
 				selectionColor={activeColor}
-				keyboardType={defaultKeyboardType}
 				returnKeyType={'done'}
 				{...this.props}
 				autoFocus={autoFocus && id == 0}
