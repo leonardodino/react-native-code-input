@@ -95,7 +95,7 @@ export default class ConfirmationCodeInput extends Component {
 		}
 	}
 
-	clear() {
+	clear = () => {
 		this.setState({
 			codeArr: new Array(this.props.codeLength).fill(''),
 			currentIndex: 0,
@@ -103,15 +103,10 @@ export default class ConfirmationCodeInput extends Component {
 		this._setFocus(0)
 	}
 
-	_setFocus(index) {
-		this.codeInputRefs[index].focus()
-	}
+	_setFocus = (index) => this.codeInputRefs[index].focus()
+	_blur = (index) => this.codeInputRefs[index].blur()
 
-	_blur(index) {
-		this.codeInputRefs[index].blur()
-	}
-
-	_onFocus(index) {
+	_onFocus = (index) => () => {
 		const {codeArr} = this.state
 		const currentEmptyIndex = _.findIndex(codeArr, c => !c)
 		if (currentEmptyIndex !== -1 && currentEmptyIndex < index) {
@@ -125,7 +120,7 @@ export default class ConfirmationCodeInput extends Component {
 		})
 	}
 
-	_onKeyPress(e) {
+	_onKeyPress = (e) => {
 		if (e.nativeEvent.key === 'Backspace') {
 			const {currentIndex} = this.state
 			const nextIndex = currentIndex > 0 ? currentIndex - 1 : 0
@@ -133,7 +128,7 @@ export default class ConfirmationCodeInput extends Component {
 		}
 	}
 
-	_onInputCode(character, index) {
+	_onInputCode = index => character => {
 		const {codeLength, onFulfill} = this.props
 		let newCodeArr = _.clone(this.state.codeArr)
 		newCodeArr[index] = character
@@ -176,10 +171,10 @@ export default class ConfirmationCodeInput extends Component {
 				returnKeyType={'done'}
 				{...this.props}
 				autoFocus={autoFocus && id == 0}
-				onFocus={() => this._onFocus(id)}
+				onFocus={this._onFocus(id)}
 				value={this.state.codeArr[id] ? this.state.codeArr[id].toString() : ''}
-				onChangeText={text => this._onInputCode(text, id)}
-				onKeyPress={e => this._onKeyPress(e)}
+				onChangeText={this._onInputCode(id)}
+				onKeyPress={this._onKeyPress}
 				maxLength={1}
 			/>
 		))
