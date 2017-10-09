@@ -104,6 +104,7 @@ export default class ConfirmationCodeInput extends Component {
 	}
 
 	_setFocus = (index) => this.codeInputRefs[index].focus()
+
 	_blur = (index) => this.codeInputRefs[index].blur()
 
 	_onFocus = (index) => () => {
@@ -148,6 +149,10 @@ export default class ConfirmationCodeInput extends Component {
 			}
 		})
 	}
+
+	focus = () => this._setFocus(this.state.currentIndex)
+
+	blur = () => this._blur(this.state.currentIndex)
 
 	render() {
 		const {
