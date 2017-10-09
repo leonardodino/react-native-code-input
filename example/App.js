@@ -55,7 +55,7 @@ export default class App extends Component {
               space={5}
               size={30}
               inputPosition='left'
-              onFulfill={(code) => this._onFulfill1(code)}
+              onFulfill={this._onFulfill1}
             />
           </View>
   
@@ -70,7 +70,7 @@ export default class App extends Component {
               autoFocus={false}
               inputPosition='center'
               size={50}
-              onFulfill={(isValid) => this._onFulfill2(isValid)}
+              onFulfill={this._onFulfill2}
               containerStyle={{ marginTop: 30 }}
               codeInputStyle={{ borderWidth: 1.5 }}
             />
@@ -86,7 +86,7 @@ export default class App extends Component {
               borderType='circle'
               autoFocus={false}
               codeInputStyle={{ fontWeight: '800' }}
-              onFulfill={(isValid, code) => this._onFulfill3(isValid, code)}
+              onFulfill={this._onFulfill3}
             />
           </View>
         </ScrollView> 
