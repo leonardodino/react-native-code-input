@@ -19,6 +19,7 @@ export default class ConfirmationCodeInput extends Component {
 		codeInputStyle: TextInput.propTypes.style,
 		containerStyle: View.propTypes.style,
 		onFulfill: PropTypes.func,
+		inputComponent: React.PropTypes.func,
 	}
 
 	static defaultProps = {
@@ -33,6 +34,7 @@ export default class ConfirmationCodeInput extends Component {
 		space: 8,
 		compareWithCode: '',
 		ignoreCase: false,
+		inputComponent: TextInput,
 	}
 
 	constructor(props) {
@@ -234,13 +236,15 @@ export default class ConfirmationCodeInput extends Component {
 			activeColor,
 		} = this.props
 
+		const Component = this.props.inputComponent
+
 		const initialCodeInputStyle = {
 			width: size,
 			height: size,
 		}
 
 		const codeInputs = _.range(codeLength).map(id => (
-			<TextInput
+			<Component
 				key={id}
 				ref={ref => (this.codeInputRefs[id] = ref)}
 				style={[
@@ -288,3 +292,4 @@ const styles = StyleSheet.create({
 		padding: 0,
 	},
 })
+	
