@@ -26,11 +26,13 @@ export default class App extends Component {
     this._alert(isValid ? 'Successful!' : 'Code mismatch!')
   }
   
-  _onFulfill2 = (isValid) => {
+  _onFulfill2 = (code) => {
+    const isValid = code.toLowerCase() === 'AsDW2'.toLowerCase()
     this._alert(isValid ? 'Successful!' : 'Code mismatch!')
   }
   
-  _onFulfill3 = (isValid, code) => {
+  _onFulfill3 = (code) => {
+    const isValid = code === '12345'
     if(isValid) this.setState({code})
     this._alert(isValid ? 'Successful!' : 'Code mismatch!')
   }
@@ -63,11 +65,9 @@ export default class App extends Component {
             </Text>
             <CodeInput
               ref='codeInputRef2'
-              compareWithCode='AsDW2'
               activeColor='rgba(49, 180, 4, 1)'
               inactiveColor='rgba(49, 180, 4, 1.3)'
               autoFocus={false}
-              ignoreCase={true}
               inputPosition='center'
               size={50}
               onFulfill={(isValid) => this._onFulfill2(isValid)}
@@ -84,7 +84,6 @@ export default class App extends Component {
               ref='codeInputRef3'
               codeLength={5}
               type='border-circle'
-              compareWithCode='12345'
               autoFocus={false}
               codeInputStyle={{ fontWeight: '800' }}
               onFulfill={(isValid, code) => this._onFulfill3(isValid, code)}

@@ -25,7 +25,6 @@ const getContainerStyle = (height, passedStyle, position = 'default') => {
 export default class ConfirmationCodeInput extends Component {
 	static propTypes = {
 		codeLength: PropTypes.number,
-		compareWithCode: PropTypes.string,
 		inputPosition: PropTypes.oneOf(Object.keys(CONTAINER_STYLES)),
 		size: PropTypes.number,
 		space: PropTypes.number,
@@ -33,7 +32,6 @@ export default class ConfirmationCodeInput extends Component {
 		cellBorderWidth: PropTypes.number,
 		activeColor: PropTypes.string,
 		inactiveColor: PropTypes.string,
-		ignoreCase: PropTypes.bool,
 		autoFocus: PropTypes.bool,
 		codeInputStyle: TextInput.propTypes.style,
 		containerStyle: View.propTypes.style,
@@ -51,8 +49,6 @@ export default class ConfirmationCodeInput extends Component {
 		activeColor: 'rgba(255, 255, 255, 1)',
 		inactiveColor: 'rgba(255, 255, 255, 0.2)',
 		space: 8,
-		compareWithCode: '',
-		ignoreCase: false,
 		inputComponent: TextInput,
 	}
 
@@ -95,12 +91,6 @@ export default class ConfirmationCodeInput extends Component {
 		})
 	}
 
-	_isMatchingCode(code, compareWithCode, ignoreCase = false) {
-		if (ignoreCase) {
-			return code.toLowerCase() == compareWithCode.toLowerCase()
-		}
-		return code == compareWithCode
-	}
 
 	_getInputSpaceStyle(space) {
 		const {inputPosition} = this.props
@@ -178,20 +168,13 @@ export default class ConfirmationCodeInput extends Component {
 	}
 
 	_onInputCode(character, index) {
-		const {codeLength, onFulfill, compareWithCode, ignoreCase} = this.props
+		const {codeLength, onFulfill} = this.props
 		let newCodeArr = _.clone(this.state.codeArr)
 		newCodeArr[index] = character
 
 		if (index == codeLength - 1) {
 			const code = newCodeArr.join('')
-
-			if (compareWithCode) {
-				const isMatching = this._isMatchingCode(code, compareWithCode, ignoreCase)
-				onFulfill(isMatching, code)
-				!isMatching && this.clear()
-			} else {
-				onFulfill(code)
-			}
+			onFulfill(code)
 			this._blur(this.state.currentIndex)
 		} else {
 			this._setFocus(this.state.currentIndex + 1)
