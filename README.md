@@ -99,6 +99,16 @@ this.refs.refName.clear();
     ref="refName"
 />
 ```
+
+getCode input:
+```javascript
+this.refs.refName.getCode();
+...
+<CodeInput
+  ...
+   ref="refName"
+/>
+```
 ## Example
 See [EXAMPLE](example)
 ```sh
