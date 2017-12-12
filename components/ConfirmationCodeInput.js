@@ -102,6 +102,10 @@ export default class ConfirmationCodeInput extends Component {
 		})
 		this._setFocus(0)
 	}
+	getCode = () => {
+		var code = this.state.codeArr.fill('')
+		return code
+	}
 
 	_setFocus = (index) => this.codeInputRefs[index].focus()
 
