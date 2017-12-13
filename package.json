@@ -24,7 +24,8 @@
     "prop-types": "^15.5.10"
   },
   "peerDependencies": {
-    "react-native": ">=15.0.0"
+    "react": "*",
+    "react-native": "*"
   },
   "homepage": "https://github.com/leonardodino/react-native-confirmation-code-input.git",
   "bugs": {
