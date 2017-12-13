@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {View, TextInput, StyleSheet, Dimensions, Platform} from 'react-native'
+import {View, TextInput, StyleSheet, Dimensions, Platform, ViewPropTypes} from 'react-native'
 import _ from 'lodash'
 
 const defaultKeyboardType = Platform.select({
@@ -65,9 +65,9 @@ export default class ConfirmationCodeInput extends Component {
 		inactiveColor: PropTypes.string,
 		autoFocus: PropTypes.bool,
 		codeInputStyle: TextInput.propTypes.style,
-		containerStyle: View.propTypes.style,
+		containerStyle: ViewPropTypes.style,
 		onFulfill: PropTypes.func,
-		inputComponent: React.PropTypes.func,
+		inputComponent: PropTypes.func,
 		keyboardType: TextInput.propTypes.keyboardType,
 	}
 
