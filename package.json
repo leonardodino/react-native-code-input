@@ -23,6 +23,9 @@
     "lodash": "^4.17.4",
     "prop-types": "^15.5.10"
   },
+  "peerDependencies": {
+    "react-native": "^15.0.0 || ^16.0.0"
+  },
   "homepage": "https://github.com/leonardodino/react-native-confirmation-code-input.git",
   "bugs": {
     "url": "https://github.com/leonardodino/react-native-confirmation-code-input.git/issues",
