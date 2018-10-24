@@ -32,7 +32,7 @@ const getInputSpaceStyle = (space, inputPosition) => {
 	return positions[inputPosition] || positions.default
 }
 
-const getBorderStyle = (cellBorderWidth, borderType) =>{
+const getBorderStyle = (cellBorderWidth, borderType) => {
 	const types = {
 		clear: {borderWidth: 0},
 		square: {borderWidth: cellBorderWidth},
@@ -129,12 +129,20 @@ export default class ConfirmationCodeInput extends Component {
 		}
 	}
 
-	_onInputCode = index => character => {
+	_onInputCode = index => _.debounce(character => {
+		if (character.length === this.props.codeLength) {
+			this._onPasteCode(index, character)
+		} else if (character.length === 1) {
+			this._onTypeCode(index, character)
+		}
+	}, 100)
+
+	_onTypeCode = (index, character) => {
 		const {codeLength, onFulfill} = this.props
 		let newCodeArr = _.clone(this.state.codeArr)
 		newCodeArr[index] = character
 
-		if (index == codeLength - 1) {
+		if (index === codeLength - 1) {
 			const code = newCodeArr.join('')
 			onFulfill(code)
 			this._blur(this.state.currentIndex)
@@ -148,6 +156,20 @@ export default class ConfirmationCodeInput extends Component {
 				currentIndex: prevState.currentIndex + 1,
 			}
 		})
+	}
+
+	_onPasteCode = (index, code) => {
+		const {codeLength, onFulfill} = this.props;
+		const newCodeArr = code.split('');
+		const newCurrentIndex = codeLength - 1;
+
+		this._blur(this.state.currentIndex)
+
+		this.setState(() => ({
+			codeArr: newCodeArr,
+			currentIndex: newCurrentIndex,
+		}))
+		onFulfill(code)
 	}
 
 	focus = () => this._setFocus(this.state.currentIndex)
@@ -180,7 +202,7 @@ export default class ConfirmationCodeInput extends Component {
 				value={this.state.codeArr[id] ? this.state.codeArr[id].toString() : ''}
 				onChangeText={this._onInputCode(id)}
 				onKeyPress={this._onKeyPress}
-				maxLength={1}
+				maxLength={codeLength}
 			/>
 		))
 
@@ -201,4 +223,3 @@ const styles = StyleSheet.create({
 		padding: 0,
 	},
 })
-	
